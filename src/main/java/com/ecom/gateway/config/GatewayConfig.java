@@ -11,16 +11,32 @@ public class GatewayConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("product-service", r -> r.path("/products/**")
-                        .filters(f -> f.rewritePath("/products(?<segment>/?.*)", "/api/products${segment}"))
+                        .filters(f -> f
+                                .rewritePath("/products(?<segment>/?.*)", "/api/products${segment}")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback")))
                         .uri("lb://PRODUCT-SERVICE"))
                 .route("user-service", r -> r.path("/users/**")
-                        .filters(f -> f.rewritePath("/users(?<segment>/?.*)", "/api/users${segment}"))
+                        .filters(f -> f
+                                .rewritePath("/users(?<segment>/?.*)", "/api/users${segment}")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback")))
                         .uri("lb://USER-SERVICE"))
                 .route("order-service", r -> r.path("/orders/**")
-                        .filters(f -> f.rewritePath("/orders(?<segment>/?.*)", "/api/orders${segment}"))
+                        .filters(f -> f
+                                .rewritePath("/orders(?<segment>/?.*)", "/api/orders${segment}")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback")))
                         .uri("lb://ORDER-SERVICE"))
                 .route("cart-service", r -> r.path("/carts/**")
-                        .filters(f -> f.rewritePath("/carts(?<segment>/?.*)", "/api/carts${segment}"))
+                        .filters(f -> f
+                                .rewritePath("/carts(?<segment>/?.*)", "/api/carts${segment}")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback")))
                         .uri("lb://ORDER-SERVICE"))
                 .route("eureka-service", r -> r.path("/eureka/main")
                         .filters(f -> f.rewritePath("/eureka/main", ""))
